@@ -108,4 +108,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+
+    //M1 Mac Room patch
+    kapt "org.xerial:sqlite-jdbc:3.34.0"
 }
