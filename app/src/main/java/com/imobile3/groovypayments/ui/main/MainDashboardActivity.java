@@ -1,5 +1,6 @@
 package com.imobile3.groovypayments.ui.main;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -15,6 +16,7 @@ import com.imobile3.groovypayments.ui.orderhistory.OrderHistoryActivity;
 import com.imobile3.groovypayments.ui.user.UserProfileActivity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -102,7 +104,17 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                throw new RuntimeException("User clicked a Placeholder button");
+                //throw new RuntimeException("User clicked a Placeholder button");
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainDashboardActivity.this);
+                builder.setTitle("Under Construction");
+                builder.setMessage("This area of the application is still under construction. Feel" +
+                        " free to demonstrate your skills and build it.");
+                builder.setNeutralButton("Acknowledged",new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
         }
     }
 
