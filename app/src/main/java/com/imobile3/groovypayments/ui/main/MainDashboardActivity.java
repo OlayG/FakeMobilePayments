@@ -9,15 +9,12 @@ import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButton;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButtonAdapter;
 import com.imobile3.groovypayments.ui.chart.PieChartActivity;
-import com.imobile3.groovypayments.ui.dialog.BaseDialogFragment;
-import com.imobile3.groovypayments.ui.dialog.CommonAlertDialog;
 import com.imobile3.groovypayments.ui.misc.SecretFunctionsActivity;
 import com.imobile3.groovypayments.ui.orderentry.OrderEntryActivity;
 import com.imobile3.groovypayments.ui.orderhistory.OrderHistoryActivity;
 import com.imobile3.groovypayments.ui.user.UserProfileActivity;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -106,9 +103,6 @@ public class MainDashboardActivity extends BaseActivity {
 
             case Placeholder2:
                 showAlertDialog(R.string.common_under_construction, R.string.under_construction_alert_message,R.string.common_acknowledged);
-//                BaseDialogFragment placeholderFragment = new BaseDialogFragment();
-//                placeholderFragment.show(getSupportFragmentManager(), "placeholder");
-                //                throw new RuntimeException("User clicked a Placeholder button");
         }
     }
 
