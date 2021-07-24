@@ -1,5 +1,7 @@
 package com.imobile3.groovypayments.ui.orderentry;
 
+import android.util.Log;
+
 import com.imobile3.groovypayments.concurrent.GroovyExecutors;
 import com.imobile3.groovypayments.data.ProductRepository;
 import com.imobile3.groovypayments.data.Result;
