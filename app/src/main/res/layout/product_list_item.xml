@@ -18,12 +18,25 @@
         android:paddingStart="@dimen/padding_medium"
         android:paddingEnd="@dimen/padding_medium">
 
-        <View
+        <ImageView
             android:id="@+id/icon"
             android:layout_width="@dimen/product_list_icon_size"
             android:layout_height="@dimen/product_list_icon_size"
             android:layout_gravity="center_vertical"
-            android:padding="@dimen/product_list_icon_padding" />
+            android:padding="@dimen/product_list_icon_padding"
+            android:scaleType="fitCenter"
+            android:contentDescription="@string/order_entry_description"
+            android:background="@drawable/dashboard_icon_bg_red"
+            tools:src="@drawable/ic_bag_coins"
+            tools:tint="@android:color/white"
+            />
+
+        <View
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="@dimen/padding_medium"
+            android:layout_marginEnd="@dimen/padding_medium"
+            android:background="@color/gray_silver" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,6 +48,12 @@
             <TextView
                 android:id="@+id/label"
                 style="@style/TextView.Label.Bold"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="BBQ Bacon Cheeseburger"
+                tools:textColor="@color/red_cinnabar" />
+            <TextView
+                android:id="@+id/description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:text="BBQ Bacon Cheeseburger"

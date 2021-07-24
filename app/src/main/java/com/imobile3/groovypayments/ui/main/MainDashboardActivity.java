@@ -9,6 +9,7 @@ import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButton;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButtonAdapter;
 import com.imobile3.groovypayments.ui.chart.PieChartActivity;
+import com.imobile3.groovypayments.ui.dialog.CommonAlertDialog;
 import com.imobile3.groovypayments.ui.misc.SecretFunctionsActivity;
 import com.imobile3.groovypayments.ui.orderentry.OrderEntryActivity;
 import com.imobile3.groovypayments.ui.orderhistory.OrderHistoryActivity;
@@ -102,7 +103,7 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                throw new RuntimeException("User clicked a Placeholder button");
+                showAlertDialog(R.string.common_under_construction, R.string.under_construction_alert_message, R.string.common_acknowledged);
         }
     }
 
