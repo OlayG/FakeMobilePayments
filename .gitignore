@@ -20,7 +20,6 @@ out/
 # Gradle files
 .gradle/
 build/
-gradle.properties
 
 # Personal API Keys
 apikeys.gradle
