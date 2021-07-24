@@ -20,6 +20,7 @@ out/
 # Gradle files
 .gradle/
 build/
+gradle.properties
 
 # Personal API Keys
 apikeys.gradle
@@ -78,3 +79,4 @@ lint/tmp/
 
 # Mac Files
 .DS_Store
+
