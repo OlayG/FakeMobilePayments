@@ -55,6 +55,8 @@ public class MainApplication extends Application {
 
     @NonNull
     public WebServiceConfig getWebServiceConfig() {
+        System.out.println("API KEY" + ApiKeyManager.getInstance().getStripeApiClientKey());
+        System.out.println(ApiKeyManager.getInstance().getStripeApiServerKey());
         return new WebServiceConfig()
                 .setApplicationContext(this)
                 .setBaseUrl("https://api.stripe.com")

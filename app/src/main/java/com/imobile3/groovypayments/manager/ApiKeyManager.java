@@ -59,7 +59,6 @@ public class ApiKeyManager {
         if (MainApplication.getInstance().isDebugMode()) {
             return BuildConfig.STRIPE_API_CLIENT_KEY;
         } else {
-            // TODO: Implement API Keys for release builds.
             return null;
         }
     }
@@ -75,6 +74,7 @@ public class ApiKeyManager {
     @Nullable
     public String getStripeApiServerKey() {
         if (MainApplication.getInstance().isDebugMode()) {
+            System.out.println(BuildConfig.STRIPE_API_CLIENT_KEY);
             return BuildConfig.STRIPE_API_SERVER_KEY;
         } else {
             // TODO: Implement API Keys for release builds.
