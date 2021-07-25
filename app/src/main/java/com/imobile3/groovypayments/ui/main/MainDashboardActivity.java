@@ -1,14 +1,21 @@
 package com.imobile3.groovypayments.ui.main;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.logging.LogHelper;
 import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButton;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButtonAdapter;
 import com.imobile3.groovypayments.ui.chart.PieChartActivity;
+import com.imobile3.groovypayments.ui.dialog.CommonAlertDialog;
 import com.imobile3.groovypayments.ui.misc.SecretFunctionsActivity;
 import com.imobile3.groovypayments.ui.orderentry.OrderEntryActivity;
 import com.imobile3.groovypayments.ui.orderhistory.OrderHistoryActivity;
@@ -102,7 +109,9 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                throw new RuntimeException("User clicked a Placeholder button");
+                underConstruction();
+                Log.i("Under Construction", "Outside the function");
+                break;
         }
     }
 
@@ -117,5 +126,13 @@ public class MainDashboardActivity extends BaseActivity {
         dashboardButtons.add(MainDashboardButton.DailyReport);
         dashboardButtons.add(MainDashboardButton.Placeholder2);
         return dashboardButtons;
+    }
+
+    private void underConstruction() {
+        CommonAlertDialog alert = new CommonAlertDialog(this);
+        alert.setTitle("UNDER CONSTRUCTION");
+        alert.setMessage("This area is the application is still under construction");
+        alert.setPositiveButton("ACKNOWLEDGED", v -> alert.closeOptionsMenu());
+        alert.show();
     }
 }
