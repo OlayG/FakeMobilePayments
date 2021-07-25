@@ -1,6 +1,7 @@
 package com.imobile3.groovypayments.ui.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,8 @@ import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.data.enums.GroovyColor;
 import com.imobile3.groovypayments.data.enums.GroovyIcon;
 import com.imobile3.groovypayments.data.model.Product;
+import com.imobile3.groovypayments.databinding.ProductListItemBinding;
+import com.imobile3.groovypayments.rules.ProductRules;
 import com.imobile3.groovypayments.utils.StateListHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ProductListAdapter
         extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
@@ -48,34 +52,15 @@ public class ProductListAdapter
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.product_list_item, parent, false);
-        return new ViewHolder(view);
+       return new ViewHolder(ProductListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+
     }
 
-    private String longToPrice(long l){
-        int priceLength = Long.toString(l).length();
-        String cost = Long.toString(l);
-        String price = "$" + cost.substring(0, priceLength - 2) + "." + cost.substring(priceLength - 2, priceLength);
-        return price;
-    }
+
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Product item = mItems.get(position);
-        holder.label.setText(item.getName());
-        holder.label.setTextColor(
-                StateListHelper.getTextColorSelector(mContext, R.color.black_space));
-        String divider = item.getNote().length() > 0 ? "|" : ""; //Question for Olay: Should this and the next line be a helper function? I feel like this sort of boolean logic doesn't belong here, as the only purpose of this function should be to bind to the viewholder
-
-        //format note and price string
-        String description = String.format("%s %s %s",longToPrice(item.getUnitPrice()), divider, item.getNote());
-        holder.description.setText(description);
-        holder.description.setTextColor(StateListHelper.getTextColorSelector(mContext, R.color.gray_pumice));
-
-        //set up background color and image
-        holder.icon.setBackground(ContextCompat.getDrawable(mContext, GroovyColor.fromId(item.getColorId()).colorRes));
-        holder.icon.setImageResource(GroovyIcon.fromId(item.getIconId()).drawableRes);
+        holder.bind(mItems.get(position));
 
     }
 
@@ -85,25 +70,32 @@ public class ProductListAdapter
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ViewGroup container;
-        TextView label;
-        TextView description;
-        ImageView icon;
+        ProductListItemBinding productListItemBinding;
 
-        ViewHolder(View itemView) {
-            super(itemView);
-            container = itemView.findViewById(R.id.container);
-            label = itemView.findViewById(R.id.label);
-            icon = itemView.findViewById(R.id.icon);
-            description = itemView.findViewById(R.id.description);
-            container.setOnClickListener(this);
+        public ViewHolder(ProductListItemBinding productListItemBinding) {
+            super(productListItemBinding.getRoot());
+            this.productListItemBinding = productListItemBinding;
         }
+
+        public void bind(Product product){
+            ProductRules productRules = new ProductRules(product);
+            productListItemBinding.label.setText(product.getName());
+            productListItemBinding.label.setTextColor(
+                    StateListHelper.getTextColorSelector(mContext, R.color.black_space));
+
+            String description = productRules.getDescription(Locale.US);
+            productListItemBinding.description.setText(description);
+            productListItemBinding.description.setTextColor(StateListHelper.getTextColorSelector(mContext, R.color.gray_pumice));
+
+            //set up background color and image
+            productListItemBinding.icon.setBackground(ContextCompat.getDrawable(mContext, GroovyColor.fromId(product.getColorId()).colorRes));
+            productListItemBinding.icon.setImageResource(GroovyIcon.fromId(product.getIconId()).drawableRes);
+        }
+
 
         @Override
         public void onClick(View v) {
-            if (v == container) {
                 mCallbacks.onProductClick(mItems.get(getAdapterPosition()));
-            }
         }
     }
 
