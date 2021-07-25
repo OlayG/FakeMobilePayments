@@ -3,6 +3,7 @@ package com.imobile3.groovypayments.ui.main;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.logging.LogHelper;
@@ -10,6 +11,7 @@ import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButton;
 import com.imobile3.groovypayments.ui.adapter.MainDashboardButtonAdapter;
 import com.imobile3.groovypayments.ui.chart.PieChartActivity;
+import com.imobile3.groovypayments.ui.dialog.CommonAlertDialog;
 import com.imobile3.groovypayments.ui.misc.SecretFunctionsActivity;
 import com.imobile3.groovypayments.ui.orderentry.OrderEntryActivity;
 import com.imobile3.groovypayments.ui.orderhistory.OrderHistoryActivity;
@@ -104,16 +106,11 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                //throw new RuntimeException("User clicked a Placeholder button");
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainDashboardActivity.this);
-                builder.setTitle("Under Construction");
-                builder.setMessage("This area of the application is still under construction. Feel" +
-                        " free to demonstrate your skills and build it.");
-                builder.setNeutralButton("Acknowledged",new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                CommonAlertDialog builder = new CommonAlertDialog(MainDashboardActivity.this);
+                builder.setTitle(getString(R.string.under_construction_title));
+                builder.setMessage(getString(R.string.under_construction_dialog));
+                builder.setNeutralButton(getString(R.string.under_construction_acknowledged), v ->
+                        builder.dismiss());
                 builder.show();
         }
     }

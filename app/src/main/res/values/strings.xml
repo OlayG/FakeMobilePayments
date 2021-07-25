@@ -114,6 +114,9 @@
     <string name="keypad_9">9</string>
     <string name="keypad_00">00</string>
     <string name="keypad_0">0</string>
+    <string name="under_construction_title">Under Construction</string>
+    <string name="under_construction_dialog">This area of the application is still under construction. Feel free to demonstrate your skills and build it.</string>
+    <string name="under_construction_acknowledged">Acknowledged</string>
 
     <!-- Progress / Tasks -->
     <string-array name="progress_dialog_messages">
