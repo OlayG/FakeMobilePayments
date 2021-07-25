@@ -69,12 +69,13 @@ public class ProductListAdapter
         return mItems.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         ProductListItemBinding productListItemBinding;
 
         public ViewHolder(ProductListItemBinding productListItemBinding) {
             super(productListItemBinding.getRoot());
             this.productListItemBinding = productListItemBinding;
+            setListener();
         }
 
         public void bind(Product product){
@@ -92,11 +93,15 @@ public class ProductListAdapter
             productListItemBinding.icon.setImageResource(GroovyIcon.fromId(product.getIconId()).drawableRes);
         }
 
+       private void setListener(){
+            this.productListItemBinding.getRoot().setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCallbacks.onProductClick(mItems.get(getAdapterPosition()));
+                }
+            });
+       }
 
-        @Override
-        public void onClick(View v) {
-                mCallbacks.onProductClick(mItems.get(getAdapterPosition()));
-        }
     }
 
     public List<Product> getItems() {
