@@ -25,7 +25,9 @@ import com.imobile3.groovypayments.data.model.Product;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Currency;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -90,5 +92,12 @@ public final class CartRules {
             }
         }
         return builder.toString();
+    }
+
+    //This is similar to the ProductRules getPriceDisplay function
+    public String getCartTotalDisplay(@NonNull Locale locale) {
+        String symbol = Currency.getInstance(locale).getSymbol();
+        BigDecimal unitPrice = new BigDecimal(mCart.getGrandTotal()).movePointLeft(2);
+        return symbol + unitPrice;
     }
 }

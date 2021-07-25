@@ -11,7 +11,10 @@ import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.data.enums.GroovyColor;
 import com.imobile3.groovypayments.data.enums.GroovyIcon;
 import com.imobile3.groovypayments.data.model.Cart;
+import com.imobile3.groovypayments.databinding.CartListItemBinding;
+import com.imobile3.groovypayments.databinding.ProductListItemBinding;
 import com.imobile3.groovypayments.rules.CartRules;
+import com.imobile3.groovypayments.rules.ProductRules;
 import com.imobile3.groovypayments.utils.StateListHelper;
 
 import org.jetbrains.annotations.NotNull;
@@ -23,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class CartListAdapter
         extends RecyclerView.Adapter<CartListAdapter.ViewHolder> {
@@ -48,24 +52,13 @@ public class CartListAdapter
     @NotNull
     @Override
     public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(mContext)
-                .inflate(R.layout.cart_list_item, parent, false);
-        return new ViewHolder(view);
+        return new CartListAdapter.ViewHolder(CartListItemBinding.inflate(LayoutInflater.from(parent.getContext()), parent, false));
+
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        Cart item = mItems.get(position);
-        CartRules rules = new CartRules(item);
-
-        // Configure the icon and background circle.
-        holder.icon.setImageResource(GroovyIcon.Bookmarklet.drawableRes);
-        holder.icon.setBackground(
-                ContextCompat.getDrawable(mContext, GroovyColor.Orange.colorRes));
-
-        holder.description.setText(rules.getOrderHistoryDescription());
-        holder.description.setTextColor(
-                StateListHelper.getTextColorSelector(mContext, R.color.gray_down_pour));
+        holder.bind(mItems.get(position));
     }
 
     @Override
@@ -74,25 +67,33 @@ public class CartListAdapter
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        ViewGroup container;
-        ImageView icon;
-        TextView labelTotal, labelDate, description;
 
-        ViewHolder(View itemView) {
-            super(itemView);
-            container = itemView.findViewById(R.id.container);
-            icon = itemView.findViewById(R.id.icon);
-            labelTotal = itemView.findViewById(R.id.label_total);
-            labelDate = itemView.findViewById(R.id.label_date);
-            description = itemView.findViewById(R.id.description);
-            container.setOnClickListener(this);
+        CartListItemBinding cartListItemBinding;
+
+        ViewHolder(CartListItemBinding cartListItemBinding) {
+            super(cartListItemBinding.getRoot());
+            this.cartListItemBinding = cartListItemBinding;
+        }
+
+        public void bind(Cart item){
+            CartRules rules = new CartRules(item);
+
+            // Configure the icon and background circle.
+            cartListItemBinding.icon.setImageResource(GroovyIcon.Bookmarklet.drawableRes);
+            cartListItemBinding.icon.setBackground(
+                    ContextCompat.getDrawable(mContext, GroovyColor.Orange.colorRes));
+
+            cartListItemBinding.description.setText(rules.getOrderHistoryDescription());
+            cartListItemBinding.description.setTextColor(
+                    StateListHelper.getTextColorSelector(mContext, R.color.gray_down_pour));
+
+            cartListItemBinding.labelDate.setText(rules.getFormattedDate(Locale.US));
+            cartListItemBinding.labelTotal.setText(rules.getCartTotalDisplay(Locale.US));
         }
 
         @Override
         public void onClick(View v) {
-            if (v == container) {
                 mCallbacks.onCartClick(mItems.get(getAdapterPosition()));
-            }
         }
     }
 
