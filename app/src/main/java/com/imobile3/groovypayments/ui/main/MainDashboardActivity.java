@@ -2,6 +2,7 @@ package com.imobile3.groovypayments.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.logging.LogHelper;
@@ -102,7 +103,8 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                throw new RuntimeException("User clicked a Placeholder button");
+                //throw new RuntimeException("User clicked a Placeholder button");
+                showAlertDialog("UNDER CONSTRUCTION", "This area of the application is still under construction.  Feel Free to demonstrate your skills and build it", "ACKNOWLEDGED", null);
         }
     }
 
