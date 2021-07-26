@@ -75,6 +75,7 @@ public class ProductListAdapter
         public ViewHolder(ProductListItemBinding productListItemBinding) {
             super(productListItemBinding.getRoot());
             this.productListItemBinding = productListItemBinding;
+            productListItemBinding.getRoot().setOnClickListener(this);
         }
 
         public void bind(Product product){
