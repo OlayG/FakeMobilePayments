@@ -13,10 +13,13 @@ import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.data.model.Product;
 import com.imobile3.groovypayments.manager.CartManager;
 import com.imobile3.groovypayments.ui.BaseActivity;
+import com.imobile3.groovypayments.ui.adapter.MainDashboardButton;
+import com.imobile3.groovypayments.ui.adapter.MainDashboardButtonAdapter;
 import com.imobile3.groovypayments.ui.adapter.ProductListAdapter;
 import com.imobile3.groovypayments.ui.checkout.CheckoutActivity;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class OrderEntryActivity extends BaseActivity {
@@ -45,6 +48,7 @@ public class OrderEntryActivity extends BaseActivity {
 
         loadProducts();
     }
+
 
     @Override
     protected void onResume() {
