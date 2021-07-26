@@ -11,6 +11,7 @@ import com.imobile3.groovypayments.R;
 import com.imobile3.groovypayments.data.model.Cart;
 import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.CartListAdapter;
+import com.imobile3.groovypayments.ui.orderentry.OrderEntryViewModel;
 
 import java.util.ArrayList;
 
@@ -28,17 +29,21 @@ public class OrderHistoryActivity extends BaseActivity {
 
         mCartListAdapter = new CartListAdapter(this,
                 new ArrayList<>(),
-                new CartListAdapter.AdapterCallback() {
-                    @Override
-                    public void onCartClick(Cart cart) {
-                        handleCartClick(cart);
-                    }
-                });
+                cart -> handleCartClick(cart));
         mCartListRecyclerView = findViewById(R.id.list_carts);
         mCartListRecyclerView.setAdapter(mCartListAdapter);
         mCartListRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        loadCarts();
 
-        // TODO: Load order history (Cart data models) from the database
+    }
+    @NonNull
+    private OrderHistoryViewModel getViewModel() {
+        return mViewModel;
+    }
+
+    private void loadCarts() {
+        getViewModel().getCarts()
+                .observe(this, data -> mCartListAdapter.setItems(data));
     }
 
     @Override
@@ -59,11 +64,6 @@ public class OrderHistoryActivity extends BaseActivity {
     protected void initViewModel() {
         mViewModel = new ViewModelProvider(this, new OrderHistoryViewModelFactory())
                 .get(OrderHistoryViewModel.class);
-    }
-
-    @NonNull
-    private OrderHistoryViewModel getViewModel() {
-        return mViewModel;
     }
 
     private void handleCartClick(@NonNull Cart cart) {
