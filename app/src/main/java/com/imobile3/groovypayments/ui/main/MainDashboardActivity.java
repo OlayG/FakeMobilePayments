@@ -106,12 +106,8 @@ public class MainDashboardActivity extends BaseActivity {
                 break;
 
             case Placeholder2:
-                CommonAlertDialog builder = new CommonAlertDialog(MainDashboardActivity.this);
-                builder.setTitle(getString(R.string.under_construction_title));
-                builder.setMessage(getString(R.string.under_construction_dialog));
-                builder.setNeutralButton(getString(R.string.under_construction_acknowledged), v ->
-                        builder.dismiss());
-                builder.show();
+                showAlertDialog(R.string.under_construction_title, R.string.under_construction_dialog,
+                        R.string.under_construction_acknowledged);
         }
     }
 
