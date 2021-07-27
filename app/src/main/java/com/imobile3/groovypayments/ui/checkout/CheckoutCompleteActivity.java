@@ -1,6 +1,7 @@
 package com.imobile3.groovypayments.ui.checkout;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -11,6 +12,8 @@ import com.imobile3.groovypayments.ui.BaseActivity;
 import java.util.Locale;
 
 public class CheckoutCompleteActivity extends BaseActivity {
+
+    public static final String EXTRA_CHANGE = "ChangeOwed";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +43,14 @@ public class CheckoutCompleteActivity extends BaseActivity {
     private void setUpViews() {
         TextView lblAmount = findViewById(R.id.label_amount);
         lblAmount.setText(CartManager.getInstance().getFormattedGrandTotal(Locale.getDefault()));
+
+        TextView lblChange = findViewById(R.id.label_change);
+        String change = getIntent().getStringExtra(EXTRA_CHANGE);
+        if (change != null && !change.isEmpty()) {
+            lblChange.setText(getString(R.string.checkout_change_left, change));
+            lblChange.setVisibility(View.VISIBLE);
+        } else lblChange.setVisibility(View.GONE);
+
 
         Button btnGroovy = findViewById(R.id.btn_groovy);
         btnGroovy.setOnClickListener(v -> completeCheckout());

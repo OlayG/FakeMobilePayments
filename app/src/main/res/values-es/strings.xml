@@ -100,6 +100,8 @@
     <string name="checkout_complete_subtitle">¡Orden completada!</string>
     <string name="checkout_complete_customer_message">Gracias por comprar con nosotros: haga
         clic en el botón a continuación para volver a la pantalla de Entrada de pedidos.</string>
+    <string name="checkout_change_left">Your change is %s</string>
+    <string name="checkout_amount_left">You still owe %s</string>
     <string name="checkout_complete_groovy">¡Maravilloso!</string>
 
     <!-- Payment Types -->

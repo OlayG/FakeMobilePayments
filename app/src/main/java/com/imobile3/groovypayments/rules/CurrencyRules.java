@@ -16,9 +16,10 @@
 
 package com.imobile3.groovypayments.rules;
 
-import com.imobile3.groovypayments.data.model.Cart;
-
 import androidx.annotation.NonNull;
+
+import com.imobile3.groovypayments.data.model.Cart;
+import com.imobile3.groovypayments.data.utils.CurrencyExtKt;
 
 import java.math.BigDecimal;
 import java.text.NumberFormat;
@@ -42,5 +43,9 @@ public final class CurrencyRules {
     @NonNull
     public String getCartTotal(@NonNull Cart cart, @NonNull Locale locale) {
         return getFormattedAmount(cart.getGrandTotal(), locale);
+    }
+
+    public long getAmountFromFormattedAmount(String formattedAmount) {
+        return CurrencyExtKt.getAmountFromFormattedAmount(formattedAmount);
     }
 }

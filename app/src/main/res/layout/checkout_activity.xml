@@ -28,9 +28,8 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/payment_type_list_item" />
 
-        <include
+        <com.imobile3.groovypayments.ui.custom.PaymentKeypad
             android:id="@+id/pay_with_cash_view"
-            layout="@layout/checkout_pay_with_cash_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/activity_horizontal_margin"

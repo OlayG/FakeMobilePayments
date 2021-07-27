@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.kapt'
 }
 apply from: 'constants.gradle'
+apply from: 'apikeys.gradle'
 
 android {
     compileSdkVersion 30
@@ -16,8 +17,8 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField STRING, STRIPE_API_CLIENT_KEY_FIELD, NULL
-        buildConfigField STRING, STRIPE_API_SERVER_KEY_FIELD, NULL
+        buildConfigField STRING, STRIPE_API_CLIENT_KEY_FIELD, STRIPE_API_CLIENT_KEY
+        buildConfigField STRING, STRIPE_API_SERVER_KEY_FIELD, STRIPE_API_SERVER_KEY
     }
 
     buildTypes {
@@ -48,6 +49,10 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    buildFeatures {
+        viewBinding true
     }
 }
 

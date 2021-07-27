@@ -15,13 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.imobile3.groovypayments.MainApplication;
 import com.imobile3.groovypayments.R;
+import com.imobile3.groovypayments.data.enums.CashStatus;
 import com.imobile3.groovypayments.data.model.PaymentType;
 import com.imobile3.groovypayments.logging.LogHelper;
 import com.imobile3.groovypayments.manager.CartManager;
 import com.imobile3.groovypayments.network.WebServiceManager;
 import com.imobile3.groovypayments.network.domainobjects.PaymentResponseHelper;
+import com.imobile3.groovypayments.rules.CurrencyRules;
 import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.PaymentTypeListAdapter;
+import com.imobile3.groovypayments.ui.custom.PaymentKeypad;
 import com.imobile3.groovypayments.ui.dialog.ProgressDialog;
 import com.imobile3.groovypayments.utils.AnimUtil;
 import com.imobile3.groovypayments.utils.JsonHelper;
@@ -48,7 +51,7 @@ public class CheckoutActivity extends BaseActivity {
     private RecyclerView mPaymentTypeListRecyclerView;
 
     // Cash
-    private View mPayWithCashView;
+    private PaymentKeypad mPayWithCashView;
     private TextView mLblCashAmount;
     private Button mBtnPayWithCash;
 
@@ -191,7 +194,7 @@ public class CheckoutActivity extends BaseActivity {
                         new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                activity.handleCheckoutComplete();
+                                activity.handleCheckoutComplete("");
                             }
                         });
             } else if (status == PaymentIntent.Status.RequiresPaymentMethod) {
@@ -256,7 +259,7 @@ public class CheckoutActivity extends BaseActivity {
         super.setUpMainNavBar();
         mMainNavBar.showBackButton();
         mMainNavBar.showTitle(CartManager.getInstance()
-                .getFormattedGrandTotal(Locale.getDefault()));
+                .getAmountOwed(Locale.getDefault()));
         mMainNavBar.showSubtitle(getString(R.string.checkout_subtitle));
     }
 
@@ -291,17 +294,39 @@ public class CheckoutActivity extends BaseActivity {
     }
 
     private void updateAmounts() {
-        String formattedGrandTotal = CartManager.getInstance()
-                .getFormattedGrandTotal(Locale.getDefault());
+        String formattedGrandTotal = CartManager.getInstance().getAmountOwed(Locale.getDefault());
         mLblCashAmount.setText(formattedGrandTotal);
         mLblCreditAmount.setText(formattedGrandTotal);
     }
 
     private void handlePayWithCashClick() {
-        showAlertDialog(
-                R.string.common_under_construction,
-                R.string.under_construction_alert_message,
-                R.string.common_acknowledged);
+        long amount = new CurrencyRules().getAmountFromFormattedAmount(
+                mLblCashAmount.getText().toString()
+        );
+        CartManager.getInstance().addCashPayment(amount);
+        CashStatus status = CartManager.getInstance().getCashStatus(Locale.getDefault());
+        if (status instanceof CashStatus.Paid) {
+
+            String change = ((CashStatus.Paid) status).getChange();
+            String msg = getString(R.string.checkout_complete_groovy);
+            if (!change.isEmpty())
+                msg = getString(R.string.checkout_change_left, change);
+            showAlertDialog(
+                    "Payment completed",
+                    msg,
+                    "OK",
+                    v -> handleCheckoutComplete(change)
+            );
+
+        } else if (status instanceof CashStatus.Partial) {
+            String amountLeft = ((CashStatus.Partial) status).getAmountLeft();
+            showAlertDialog(
+                    "Payment not completed",
+                    getString(R.string.checkout_amount_left, amountLeft),
+                    "OK",
+                    v -> handlePartialPayment(amountLeft)
+            );
+        }
     }
 
     //region (Animated) View Transitions
@@ -393,11 +418,21 @@ public class CheckoutActivity extends BaseActivity {
         mProgressDialog.dismiss();
     }
 
-    private void handleCheckoutComplete() {
+    private void handlePartialPayment(String amountLeft) {
+        LogHelper.writeWithTrace(Level.FINE, TAG,
+                String.format("Processed payment %s still owed", amountLeft));
+
+        mMainNavBar.showTitle(amountLeft);
+        mLblCashAmount.setText(amountLeft);
+    }
+
+    private void handleCheckoutComplete(String change) {
         LogHelper.writeWithTrace(Level.FINE, TAG,
                 "Proceeding to the Checkout Complete screen");
 
-        startActivity(new Intent(this, CheckoutCompleteActivity.class));
+        Intent intent = new Intent(this, CheckoutCompleteActivity.class);
+        intent.putExtra(CheckoutCompleteActivity.EXTRA_CHANGE, change);
+        startActivity(intent);
         // Remove this activity from the stack.
         finish();
     }

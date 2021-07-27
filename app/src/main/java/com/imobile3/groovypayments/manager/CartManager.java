@@ -19,6 +19,9 @@ package com.imobile3.groovypayments.manager;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.imobile3.groovypayments.calculation.CartCalculator;
 import com.imobile3.groovypayments.concurrent.GroovyExecutors;
 import com.imobile3.groovypayments.data.DatabaseHelper;
@@ -26,9 +29,11 @@ import com.imobile3.groovypayments.data.entities.CartPaymentEntity;
 import com.imobile3.groovypayments.data.entities.CartProductEntity;
 import com.imobile3.groovypayments.data.entities.CartTaxEntity;
 import com.imobile3.groovypayments.data.entities.TaxEntity;
+import com.imobile3.groovypayments.data.enums.CashStatus;
 import com.imobile3.groovypayments.data.enums.GroovyPaymentType;
 import com.imobile3.groovypayments.data.model.Cart;
 import com.imobile3.groovypayments.data.model.Product;
+import com.imobile3.groovypayments.data.utils.CartExtKt;
 import com.imobile3.groovypayments.data.utils.CartPaymentBuilder;
 import com.imobile3.groovypayments.data.utils.CartProductBuilder;
 import com.imobile3.groovypayments.data.utils.CartTaxBuilder;
@@ -36,9 +41,6 @@ import com.imobile3.groovypayments.logging.LogHelper;
 import com.imobile3.groovypayments.network.domainobjects.PaymentResponseDto;
 import com.imobile3.groovypayments.rules.CartRules;
 import com.imobile3.groovypayments.rules.CurrencyRules;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -158,6 +160,51 @@ public class CartManager {
         new CartCalculator(mCart).calculate();
 
         saveCurrentCart();
+    }
+
+    public void addCashPayment(long approvedAmount) {
+        if (mCart == null) {
+            throw new IllegalStateException("Cart is null");
+        }
+
+        if (mCart.getPayments() == null) {
+            mCart.setPayments(new ArrayList<>());
+        }
+
+        LogHelper.writeWithTrace(Level.CONFIG, TAG,
+                "Adding payment with approved amount: " + new CurrencyRules()
+                        .getFormattedAmount(approvedAmount, Locale.US));
+
+        mCart.getPayments().add(CartPaymentBuilder.from(
+                mCart, GroovyPaymentType.Cash, approvedAmount, ""
+        ));
+
+        new CartCalculator(mCart).calculate();
+
+        saveCurrentCart();
+    }
+
+    /**
+     * @param locale the users locale
+     * @return CashStatus.Paid if exact or over paid or CashStatus.Partial if under paid or
+     * CashStatus.NoAction if mCart is null
+     */
+    public CashStatus getCashStatus(@NonNull Locale locale) {
+        CashStatus status = CashStatus.NoAction.INSTANCE;
+        if (mCart == null) return status;
+        long amountLeft = CartExtKt.getCartAmountLeft(mCart);
+        CurrencyRules currencyRules = new CurrencyRules();
+        if (amountLeft == 0) status = new CashStatus.Paid();
+        else if (amountLeft < 0)
+            status = new CashStatus.Paid(currencyRules.getFormattedAmount(Math.abs(amountLeft), locale));
+        else status = new CashStatus.Partial(currencyRules.getFormattedAmount(amountLeft, locale));
+        return status;
+    }
+
+    public String getAmountOwed(@NonNull Locale locale) {
+        if (mCart == null) return getFormattedGrandTotal(locale);
+        long amountLeft = CartExtKt.getCartAmountLeft(mCart);
+        return new CurrencyRules().getFormattedAmount(amountLeft, Locale.getDefault());
     }
 
     public String getFormattedGrandTotal(@NonNull Locale locale) {
