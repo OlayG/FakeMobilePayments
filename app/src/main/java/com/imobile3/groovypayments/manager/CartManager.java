@@ -136,6 +136,30 @@ public class CartManager {
         mCart.getTaxes().add(CartTaxBuilder.from(mCart, tax));
     }
 
+    public void addCashPayment(long paymentAmount){
+        if (mCart == null) {
+            throw new IllegalStateException("Cart is null");
+        }
+
+        if (mCart.getPayments() == null) {
+            mCart.setPayments(new ArrayList<>());
+        }
+
+        LogHelper.writeWithTrace(Level.CONFIG, TAG,
+                "Adding payment with approved amount: " + new CurrencyRules()
+                        .getFormattedAmount(paymentAmount, Locale.US));
+
+        mCart.getPayments().add(CartPaymentBuilder.from(
+                mCart, GroovyPaymentType.Cash,
+                paymentAmount,
+                ""));
+
+        new CartCalculator(mCart).calculate();
+
+        saveCurrentCart();
+
+    }
+
     public void addCreditPayment(@NonNull PaymentResponseDto paymentResponse) {
         if (mCart == null) {
             throw new IllegalStateException("Cart is null");

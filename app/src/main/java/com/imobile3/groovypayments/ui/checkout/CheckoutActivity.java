@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,6 +21,7 @@ import com.imobile3.groovypayments.logging.LogHelper;
 import com.imobile3.groovypayments.manager.CartManager;
 import com.imobile3.groovypayments.network.WebServiceManager;
 import com.imobile3.groovypayments.network.domainobjects.PaymentResponseHelper;
+import com.imobile3.groovypayments.rules.CurrencyRules;
 import com.imobile3.groovypayments.ui.BaseActivity;
 import com.imobile3.groovypayments.ui.adapter.PaymentTypeListAdapter;
 import com.imobile3.groovypayments.ui.dialog.ProgressDialog;
@@ -36,6 +38,8 @@ import com.stripe.android.model.PaymentMethodCreateParams;
 import com.stripe.android.view.CardInputWidget;
 
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.Objects;
@@ -48,9 +52,10 @@ public class CheckoutActivity extends BaseActivity {
     private RecyclerView mPaymentTypeListRecyclerView;
 
     // Cash
-    private View mPayWithCashView;
+    private PaymentKeypad mPayWithCashView;
     private TextView mLblCashAmount;
     private Button mBtnPayWithCash;
+
 
     // Credit
     private View mPayWithCreditView;
@@ -96,12 +101,16 @@ public class CheckoutActivity extends BaseActivity {
 
         mProgressDialog = new ProgressDialog(this);
 
+
+
+
         // Web Services must be initialized for payment processing.
         WebServiceManager.getInstance().init(
                 MainApplication.getInstance().getWebServiceConfig());
 
         loadPaymentTypes();
     }
+
 
     @Override
     public void onBackPressed() {
@@ -298,10 +307,37 @@ public class CheckoutActivity extends BaseActivity {
     }
 
     private void handlePayWithCashClick() {
-        showAlertDialog(
-                R.string.common_under_construction,
-                R.string.under_construction_alert_message,
-                R.string.common_acknowledged);
+        long paymentAmount = mPayWithCashView.getTotalAmount();
+        long cartTotal = CartManager.getInstance().getCart().getGrandTotal() - CartManager.getInstance().getCart().getTotalPaid();
+        CartManager.getInstance().addCashPayment(paymentAmount);
+
+        if (paymentAmount < cartTotal) {
+            showAlertDialog(
+                    "Payment Incomplete",
+                    "You still owe" + new CurrencyRules().getFormattedAmount(cartTotal - paymentAmount, Locale.US),
+                    "OK",
+                    null);
+        } else if (paymentAmount == cartTotal){
+            showAlertDialog(
+                    "Payment completed",
+                    "OK",
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handleCheckoutComplete();
+                        }
+                    });
+        } else {
+            showAlertDialog(
+                    "Payment completed",
+                    "Your change is " + new CurrencyRules().getFormattedAmount(paymentAmount - cartTotal, Locale.US),
+                    new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            handleCheckoutComplete();
+                        }
+                    });
+        }
     }
 
     //region (Animated) View Transitions

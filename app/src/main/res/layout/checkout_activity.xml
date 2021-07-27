@@ -28,15 +28,15 @@
             android:layout_height="match_parent"
             tools:listitem="@layout/payment_type_list_item" />
 
-        <include
+        <com.imobile3.groovypayments.ui.checkout.PaymentKeypad
             android:id="@+id/pay_with_cash_view"
-            layout="@layout/checkout_pay_with_cash_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginEnd="@dimen/activity_horizontal_margin"
             android:visibility="gone"
-            tools:visibility="visible" />
+            tools:visibility="visible"
+            />
 
         <include
             android:id="@+id/pay_with_credit_view"
